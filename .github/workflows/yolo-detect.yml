@@ -17,7 +17,7 @@ jobs:
         runs-on: [ubuntu-22.04]
     runs-on: ${{ matrix.runs-on }}
     container:
-      image: ultralytics/ultralytics:8.3.89-cpu
+      image: python:3.8-slim
       options: --privileged
 
     steps:
@@ -30,7 +30,9 @@ jobs:
     - name: Run build script
       run: |
         apt-get update && apt install -y --no-install-recommends wget
-        pip install onnxsim
+        pip install onnx onnxruntime onnxsim opencv-python numpy torch torchvision
+        # 设置PYTHONPATH以使用本地ultralytics包
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
         cd yolo
         mkdir -pv onnx
         cd onnx
