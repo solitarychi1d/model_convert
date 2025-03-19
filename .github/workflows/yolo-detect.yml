@@ -17,7 +17,7 @@ jobs:
         runs-on: [ubuntu-22.04]
     runs-on: ${{ matrix.runs-on }}
     container:
-      image: python:3.8-slim
+      image: python:3.11-slim
       options: --privileged
 
     steps:
@@ -74,8 +74,12 @@ jobs:
         cd yolo
         mkdir -pv rknn
         cp -vr ${SRC_PATH}/onnx_artifacts/*.onnx ./rknn/
-        python convert.pyc rknn/yolo.onnx rk3588 i8 rknn/yolo.rknn
-
+        # 确保使用Python 3.11运行pyc文件
+        if command -v python3.11 &> /dev/null; then
+          python3.11 convert.pyc rknn/yolo.onnx rk3588 i8 rknn/yolo.rknn
+        else
+          python convert.pyc rknn/yolo.onnx rk3588 i8 rknn/yolo.rknn
+        fi
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -110,7 +114,6 @@ jobs:
         export LD_LIBRARY_PATH=/usr/local/Ascend/ascend-toolkit/latest/x86_64-linux/devlib/:$LD_LIBRARY_PATH
         cd om
         atc --model=yolo.onnx --framework=5 --output=yolo --soc_version=Ascend310B4
-
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
