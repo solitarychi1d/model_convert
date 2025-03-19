@@ -29,8 +29,24 @@ jobs:
 
     - name: Run build script
       run: |
-        apt-get update && apt install -y --no-install-recommends wget
-        pip install onnx onnxruntime onnxsim opencv-python numpy torch torchvision
+        apt-get update && apt-get install -y --no-install-recommends \
+          wget \
+          libgl1-mesa-glx \
+          libglib2.0-0 \
+          libsm6 \
+          libxext6 \
+          libxrender-dev \
+          libgomp1 \
+          git
+        
+        # 安装PyTorch和其他依赖
+        pip install onnx onnxruntime onnxsim 
+        pip install opencv-python pillow matplotlib pyyaml seaborn pandas thop psutil
+        pip install numpy torch torchvision
+        
+        # 为ultralytics安装其他可能需要的依赖
+        pip install tqdm tensorboard
+        
         # 设置PYTHONPATH以使用本地ultralytics包
         export PYTHONPATH=$PYTHONPATH:$(pwd)
         cd yolo
@@ -70,6 +86,16 @@ jobs:
 
     - name: Run build script
       run: |
+        # 安装可能需要的系统依赖
+        if command -v apt-get &> /dev/null; then
+          apt-get update && apt-get install -y --no-install-recommends \
+            libgl1-mesa-glx \
+            libglib2.0-0 \
+            libsm6 \
+            libxext6 \
+            libxrender-dev
+        fi
+        
         SRC_PATH=$(pwd)
         cd yolo
         mkdir -pv rknn
@@ -98,6 +124,12 @@ jobs:
       options: --privileged
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1000
+        fetch-tags: true
+        
     - name: Download artifacts from pt2onnx
       uses: actions/download-artifact@v4
       with:
@@ -107,6 +139,16 @@ jobs:
     - name: Run build script
       shell: bash
       run: |
+        # 安装可能需要的系统依赖
+        if command -v apt-get &> /dev/null; then
+          apt-get update && apt-get install -y --no-install-recommends \
+            libgl1-mesa-glx \
+            libglib2.0-0 \
+            libsm6 \
+            libxext6 \
+            libxrender-dev
+        fi
+        
         SRC_PATH=$(pwd)
         mkdir -pv om
         cp -vr ${SRC_PATH}/onnx_artifacts/*.onnx ./om/
