@@ -45,7 +45,7 @@ jobs:
         # 安装其他必要的依赖
         pip install onnx onnxruntime onnxsim 
         pip install opencv-python pillow matplotlib pyyaml seaborn pandas thop psutil
-        pip install numpy torch torchvision tqdm tensorboard dill
+        pip install numpy torch torchvision tqdm tensorboard dill timm
         
         # 卸载ultralytics以使用本地版本
         pip uninstall -y ultralytics
@@ -109,7 +109,7 @@ jobs:
         fi
         
         # 安装dill包
-        pip install dill
+        pip install dill timm
         
         SRC_PATH=$(pwd)
         cd yolo
@@ -166,7 +166,7 @@ jobs:
         
         # 安装dill包
         if command -v pip &> /dev/null; then
-          pip install dill
+          pip install dill timm
         fi
         
         SRC_PATH=$(pwd)
