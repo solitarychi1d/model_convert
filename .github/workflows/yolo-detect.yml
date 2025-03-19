@@ -109,8 +109,8 @@ jobs:
             libxrender-dev
         fi
         
-        # 安装dill包和其他依赖
-        pip install timm==1.0.7 thop efficientnet_pytorch==0.7.1 einops grad-cam==1.4.8 dill==0.3.8 albumentations==1.4.11 pytorch_wavelets==1.3.0 tidecv PyWavelets
+        # 安装dill包
+        pip install dill
         
         SRC_PATH=$(pwd)
         cd yolo
@@ -165,9 +165,9 @@ jobs:
             libxrender-dev
         fi
         
-        # 安装dill包和其他依赖
+        # 安装dill包
         if command -v pip &> /dev/null; then
-          pip install timm==1.0.7 thop efficientnet_pytorch==0.7.1 einops grad-cam==1.4.8 dill==0.3.8 albumentations==1.4.11 pytorch_wavelets==1.3.0 tidecv PyWavelets
+          pip install dill
         fi
         
         SRC_PATH=$(pwd)
