@@ -116,12 +116,8 @@ jobs:
         cd yolo
         mkdir -pv rknn
         cp -vr ${SRC_PATH}/onnx_artifacts/*.onnx ./rknn/
-        # 确保使用Python 3.11运行pyc文件
-        if command -v python3.11 &> /dev/null; then
-          python3.11 convert.pyc rknn/yolo.onnx rk3588 i8 rknn/yolo.rknn
-        else
-          python convert.pyc rknn/yolo.onnx rk3588 i8 rknn/yolo.rknn
-        fi
+        # 直接使用可用的Python版本执行转换脚本
+        python convert.pyc rknn/yolo.onnx rk3588 i8 rknn/yolo.rknn
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
