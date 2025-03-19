@@ -39,13 +39,16 @@ jobs:
           libgomp1 \
           git
         
-        # 安装PyTorch和其他依赖
+        # 先安装ultralytics以获取所有依赖
+        pip install ultralytics
+        
+        # 安装其他必要的依赖
         pip install onnx onnxruntime onnxsim 
         pip install opencv-python pillow matplotlib pyyaml seaborn pandas thop psutil
-        pip install numpy torch torchvision
+        pip install numpy torch torchvision tqdm tensorboard dill
         
-        # 为ultralytics安装其他可能需要的依赖
-        pip install tqdm tensorboard
+        # 卸载ultralytics以使用本地版本
+        pip uninstall -y ultralytics
         
         # 设置PYTHONPATH以使用本地ultralytics包
         export PYTHONPATH=$PYTHONPATH:$(pwd)
@@ -53,6 +56,15 @@ jobs:
         mkdir -pv onnx
         cd onnx
         wget https://github.com/solitarychi1d/model_convert/releases/download/PT/best.pt -O yolo.pt
+        
+        # 打印Python路径和导入信息以便调试
+        python -c "import sys; print(f'Python Path: {sys.path}')"
+        python -c "import sys; from pathlib import Path; print(f'Current directory: {Path.cwd()}'); print(f'Parent directory in path: {Path.cwd().parent in [Path(p) for p in sys.path]}')"
+        
+        # 尝试导入ultralytics看是否成功
+        python -c "import ultralytics; print(f'Ultralytics version: {ultralytics.__version__}')"
+        
+        # 运行转换脚本
         python ../export_det_v11.pyc -w yolo.pt --sim
 
     - name: Upload artifact
@@ -95,6 +107,9 @@ jobs:
             libxext6 \
             libxrender-dev
         fi
+        
+        # 安装dill包
+        pip install dill
         
         SRC_PATH=$(pwd)
         cd yolo
@@ -147,6 +162,11 @@ jobs:
             libsm6 \
             libxext6 \
             libxrender-dev
+        fi
+        
+        # 安装dill包
+        if command -v pip &> /dev/null; then
+          pip install dill
         fi
         
         SRC_PATH=$(pwd)
